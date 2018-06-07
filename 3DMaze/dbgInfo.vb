@@ -5,7 +5,7 @@ Public Class dbgInfo
     Inherits DrawableGameComponent
     Private _fps As Integer
     Private _time As Double
-    Public Shared debug As String = "W, S, A, D: Movement" & vbLf & "Space: Jump" & vbLf & "Shift: Run" & vbLf & "Q: Jet-Pack" & vbLf & "RMB: Zoom-in" & vbLf & "F1: Solid" & vbLf & "F2: Wireframe" & vbLf & "F3: Player camera" & vbLf & "F4: Free camera" & vbLf & "F11: Randomize level" & vbLf & "F12: Free no-clip camera" & vbLf & "ESC: quit"
+    Public Shared debug As String = "W, S, A, D: Movement" & vbLf & "Space: Jump" & vbLf & "Shift: Run" & vbLf & "RMB: Zoom-in" & vbLf & "F11: Randomize level" & vbLf & "ESC: quit"
     Private font As SpriteFont
     Private fps As Integer
     Private spriteBatch As SpriteBatch

@@ -18,7 +18,8 @@ Public Class VoxelObject
     Public width As Integer
     Public depth As Integer
 
-    Public effect As BasicEffect
+    Public wallsEffect As BasicEffect
+    Public exitEffect As BasicEffect
 
     Public Sub New(scene As Scene, width As Integer, height As Integer, depth As Integer)
         MyBase.New(scene)
@@ -31,19 +32,36 @@ Public Class VoxelObject
         Me.depth = depth
 
         Me.data = New Block(width - 1, depth - 1, height - 1) {}
-        Me.effect = New BasicEffect(scene.GraphicsDevice)
-        Me.effect.DiffuseColor = New Vector3(0, 1, 0.33)
+        Me.wallsEffect = New BasicEffect(scene.GraphicsDevice)
+        Me.wallsEffect.DiffuseColor = New Vector3(0, 1, 0.33)
 
         If Me.texture IsNot Nothing Then
-            Me.effect.TextureEnabled = True
-            Me.effect.Texture = Me.texture
+            Me.wallsEffect.TextureEnabled = True
+            Me.wallsEffect.Texture = Me.texture
         End If
 
-        Me.effect.FogColor = New Vector3(0.0F, 0.0F, 0.0F)
-        Me.effect.FogStart = 0.0F
-        Me.effect.FogEnd = 4000.0F
-        Me.effect.FogEnabled = True
-        Me.effect.EnableDefaultLighting()
+        Me.wallsEffect.FogColor = New Vector3(0.0F, 0.0F, 0.0F)
+        Me.wallsEffect.FogStart = 0.0F
+        Me.wallsEffect.FogEnd = 4000.0F
+        Me.wallsEffect.FogEnabled = True
+        Me.wallsEffect.EnableDefaultLighting()
+
+        ' added effect for exit
+
+        Me.exitEffect = New BasicEffect(scene.GraphicsDevice)
+        Me.exitEffect.DiffuseColor = New Vector3(1, 0, 0.33)
+
+        If Me.texture IsNot Nothing Then
+            Me.exitEffect.TextureEnabled = True
+            Me.exitEffect.Texture = Me.texture
+        End If
+
+        Me.exitEffect.FogColor = New Vector3(0.0F, 0.0F, 0.0F)
+        Me.exitEffect.FogStart = 0.0F
+        Me.exitEffect.FogEnd = 4000.0F
+        Me.exitEffect.FogEnabled = True
+        Me.exitEffect.EnableDefaultLighting()
+        ' end
 
         For i As Integer = 0 To width - 1
             For j As Integer = 0 To depth - 1
@@ -121,6 +139,7 @@ Public Class VoxelObject
 
     Public Sub Randomize()
         Dim random As New Random()
+        Dim empty = New List(Of Tuple(Of Integer, Integer, Integer))
         For i As Integer = 0 To Me.width - 1
             For j As Integer = 0 To Me.depth - 1
                 For k As Integer = 0 To Me.height - 1
@@ -135,10 +154,28 @@ Public Class VoxelObject
                         End If
                     Else
                         Me.data(i, j, k).tile = Me.currentTileset
+                        empty.Add(New Tuple(Of Integer, Integer, Integer)(i, j, k))
                     End If
                 Next
             Next
         Next
+
+        Dim exits = New Integer(3) {}
+        For i As Integer = 0 To exits.Length
+            exits(i) = random.[Next](0, empty.Count)
+            For j As Integer = 0 To i
+                If exits(i) = exits(j) Then
+                    i -= 1
+                    Exit For
+                End If
+            Next
+        Next
+
+        For i As Integer = 0 To exits.Length
+            Dim coords = empty(exits(i))
+            data(coords.Item1, coords.Item2, coords.Item3).tile = 7
+        Next
+
         Me.Rebuild()
     End Sub
 
@@ -184,19 +221,35 @@ Public Class VoxelObject
     Public Overrides Sub Draw(gameTime As GameTime)
         MyBase.Draw(gameTime)
 
-        Me.effect.World = MyBase.scene.world * Matrix.CreateScale(1000.0F)
-        Me.effect.Projection = MyBase.scene.projection
-        Me.effect.View = MyBase.scene.view
+        Me.wallsEffect.World = MyBase.scene.world * Matrix.CreateScale(1000.0F)
+        Me.wallsEffect.Projection = MyBase.scene.projection
+        Me.wallsEffect.View = MyBase.scene.view
 
         If Me.texture IsNot Nothing Then
-            Me.effect.TextureEnabled = True
-            Me.effect.Texture = Me.texture
+            Me.wallsEffect.TextureEnabled = True
+            Me.wallsEffect.Texture = Me.texture
         End If
 
-        For Each pass As EffectPass In Me.effect.CurrentTechnique.Passes
+        For Each pass As EffectPass In Me.wallsEffect.CurrentTechnique.Passes
             pass.Apply()
             MyBase.scene.GraphicsDevice.SetVertexBuffer(Me.buffer)
             MyBase.scene.GraphicsDevice.DrawPrimitives(0, 0, Me._vertices.Length \ 3)
         Next
+
+        Me.exitEffect.World = MyBase.scene.world * Matrix.CreateScale(1000.0F)
+        Me.exitEffect.Projection = MyBase.scene.projection
+        Me.exitEffect.View = MyBase.scene.view
+
+        If Me.texture IsNot Nothing Then
+            Me.exitEffect.TextureEnabled = True
+            Me.exitEffect.Texture = Me.texture
+        End If
+
+        For Each pass As EffectPass In Me.exitEffect.CurrentTechnique.Passes
+            pass.Apply()
+            ' Draw exit here
+        Next
+
+
     End Sub
 End Class

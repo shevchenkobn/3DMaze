@@ -8,6 +8,8 @@ Public Class Game1
     Private graphics As GraphicsDeviceManager
     Private spriteBatch As SpriteBatch
 
+    Public dbgInfo As dbgInfo
+
     Private hud As Hud
     Private scene As Scene
 
@@ -23,7 +25,9 @@ Public Class Game1
 
         MyBase.Components.Add(Me.scene)
         MyBase.Components.Add(Me.hud)
-        MyBase.Components.Add(New dbgInfo(Me))
+        dbgInfo = New dbgInfo(Me)
+
+        MyBase.Components.Add(dbgInfo)
     End Sub
 
     Protected Overrides Sub Initialize()
@@ -38,7 +42,8 @@ Public Class Game1
     End Sub
 
     Protected Overrides Sub Update(ByVal gameTime As GameTime)
-        If (GamePad.GetState(PlayerIndex.One).Buttons.Back = ButtonState.Pressed) OrElse Keyboard.GetState.IsKeyDown(Keys.Escape) Then
+        If (GamePad.GetState(PlayerIndex.One).Buttons.Back = ButtonState.Pressed) OrElse
+            Keyboard.GetState.IsKeyDown(Keys.Escape) Then
             Me.Exit()
         End If
 

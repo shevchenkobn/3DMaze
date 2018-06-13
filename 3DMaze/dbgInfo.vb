@@ -1,11 +1,13 @@
 ﻿Imports Microsoft.Xna.Framework
 Imports Microsoft.Xna.Framework.Graphics
+Imports System.Diagnostics
 
 Public Class dbgInfo
     Inherits DrawableGameComponent
+    Public Level As Integer = 1
     Private _fps As Integer
     Private _time As Double
-    Public Shared debug As String = "W, S, A, D: Movement" & vbLf & "Space: Jump" & vbLf & "Shift: Run" & vbLf & "RMB: Zoom-in" & vbLf & "F11: Randomize level" & vbLf & "ESC: quit"
+    Public Shared debug As String = "W, S, A, D: Movement" & vbLf & "Space: Jump" & vbLf & "Shift: Run" & vbLf & "RMB: Zoom-in" & vbLf & "ESC: quit"
     Private font As SpriteFont
     Private fps As Integer
     Private spriteBatch As SpriteBatch
@@ -24,7 +26,8 @@ Public Class dbgInfo
         End While
         MyBase.Draw(gameTime)
         Me.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, DepthStencilState.Default, RasterizerState.CullCounterClockwise)
-        Dim str As String = String.Concat(New Object() {"FPS: ", Me.fps, vbLf, debug})
+        Dim str As String = String.Concat(New Object() {"Level: " & Level, vbLf, vbLf, vbLf, vbLf, vbLf, "FPS: ", Me.fps, vbLf, debug})
+        'System.Diagnostics.Debug.WriteLine(Level)
         Me.spriteBatch.DrawString(Me.font, str, Vector2.One, Color.Black)
         Me.spriteBatch.DrawString(Me.font, str, Vector2.Zero, Color.Red)
         Me.spriteBatch.End()

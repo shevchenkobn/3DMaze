@@ -64,22 +64,22 @@ Public Class FreeCam
         If kbs.IsKeyDown(Keys.D) Then
             MyBase.move -= vector3Pos * If(kbs.IsKeyDown(Keys.LeftShift), (speed * runMulti), speed)
         End If
-        If kbs.IsKeyDown(Keys.F3) Then
-            isFree = False
-            MyBase.collide = True
-        End If
-        If kbs.IsKeyDown(Keys.F4) Then
-            isFree = True
-            MyBase.collide = True
-        End If
-        If kbs.IsKeyDown(Keys.F12) Then
-            isFree = True
-            MyBase.collide = False
-        End If
+        'If kbs.IsKeyDown(Keys.F3) Then
+        '    isFree = False
+        '    MyBase.collide = True
+        'End If
+        'If kbs.IsKeyDown(Keys.F4) Then
+        '    isFree = True
+        '    MyBase.collide = True
+        'End If
+        'If kbs.IsKeyDown(Keys.F12) Then
+        '    isFree = True
+        '    MyBase.collide = False
+        'End If
         If Not isFree Then
-            If kbs.IsKeyDown(Keys.Q) Then
-                Me.grav = -2000.0F
-            End If
+            'If kbs.IsKeyDown(Keys.Q) Then
+            '    Me.grav = -2000.0F
+            'End If
             If kbs.IsKeyDown(Keys.Space) AndAlso MyBase.onGround Then
                 Me.grav = -5000.0F
                 MyBase.onGround = False

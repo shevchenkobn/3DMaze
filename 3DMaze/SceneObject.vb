@@ -6,6 +6,10 @@ Public Class SceneObject
     Public collide As Boolean = True
     Public onGround As Boolean
     Public visible As Boolean = True
+    Public inExit As Boolean = False
+    Public wasInExit As Boolean = False
+
+    Public Event ExitFound As Action
 
     Public lastMove As Vector3
     Public move As Vector3 = Vector3.Zero
@@ -61,11 +65,18 @@ Public Class SceneObject
                 point -= direction
                 Exit For
             Else
-                If Me.scene.level.IsBlock(CInt(Math.Round(CDbl(point.X))), CInt(Math.Round(CDbl(point.Y))), CInt(Math.Round(CDbl(point.Z)))) Then
-                    point -= direction
-                    Exit For
+                If scene.level.IsExit(CInt(Math.Round(CDbl(point.X))), CInt(Math.Round(CDbl(point.Y))), CInt(Math.Round(CDbl(point.Z)))) Then
+                    If i > 0.15 * maxCheck AndAlso i < 0.85 * maxCheck Then
+                        'RaiseEvent ExitFound()
+                        'scene.level.Randomize()
+                        inExit = True
+                    End If
+                Else
+                    If Me.scene.level.IsBlock(CInt(Math.Round(CDbl(point.X))), CInt(Math.Round(CDbl(point.Y))), CInt(Math.Round(CDbl(point.Z)))) Then
+                        point -= direction
+                        Exit For
+                    End If
                 End If
-
             End If
         Next
         Return (Vector3.Distance(point, vector) * 1000.0F)
@@ -77,6 +88,7 @@ Public Class SceneObject
     Public Overridable Sub Update(gameTime As GameTime)
         Dim factor As Single = CSng(gameTime.ElapsedGameTime.TotalMilliseconds) / 1000.0F
         Dim mv As Vector3 = Me.move * factor
+        inExit = False
         If Me.collide Then
             mv = Me.CanMove(Me.position + New Vector3(250.0F, 250.0F, 250.0F), mv, factor, False)
             mv = Me.CanMove(Me.position + New Vector3(-250.0F, 250.0F, 250.0F), mv, factor, False)
@@ -97,5 +109,11 @@ Public Class SceneObject
         End If
         Me.position += mv
         Me.lastMove = mv
+        'Debug.WriteLine("{0}: {1} {2}", Me.GetType(), wasInExit, inExit)
+        If wasInExit AndAlso Not inExit Then
+            scene.level.Randomize()
+            RaiseEvent ExitFound()
+        End If
+        wasInExit = inExit
     End Sub
 End Class

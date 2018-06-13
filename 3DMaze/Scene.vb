@@ -13,14 +13,16 @@ Public Class Scene
 
     Public level As VoxelObject
     Private objects As List(Of SceneObject)
+    Private game1 As Game1
 
     Private fov As Single
 
     Private wireframe As Boolean
     Private wireFrameState As RasterizerState
 
-    Public Sub New(game As Game)
+    Public Sub New(game As Game1)
         MyBase.New(game)
+        game1 = game
         Me.objects = New List(Of SceneObject)()
         Dim state As New RasterizerState()
         state.FillMode = FillMode.WireFrame
@@ -52,6 +54,9 @@ Public Class Scene
         MyBase.LoadContent()
 
         Dim cam As New FreeCam(Me)
+        AddHandler cam.ExitFound, Function()
+                                      game1.dbgInfo.Level += 1
+                                  End Function
         Me.player = cam
         Me.objects.Add(Me.player)
 
@@ -75,12 +80,12 @@ Public Class Scene
         Me.projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(Me.fov), MyBase.GraphicsDevice.Viewport.AspectRatio, 1.0F, 6000.0F)
 
         Dim kbs As KeyboardState = Keyboard.GetState()
-        If kbs.IsKeyDown(Keys.F1) Then
-            Me.wireframe = False
-        End If
-        If kbs.IsKeyDown(Keys.F2) Then
-            Me.wireframe = True
-        End If
+        'If kbs.IsKeyDown(Keys.F1) Then
+        '    Me.wireframe = False
+        'End If
+        'If kbs.IsKeyDown(Keys.F2) Then
+        '    Me.wireframe = True
+        'End If
 
         Dim ms As MouseState = Mouse.GetState()
         If (ms.RightButton = ButtonState.Pressed) AndAlso (Me.fov > 25.0F) Then

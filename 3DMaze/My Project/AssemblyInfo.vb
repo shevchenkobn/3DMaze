@@ -12,7 +12,8 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("3DMaze")>
-<Assembly: AssemblyCopyright("Copyright ©  2017")>
+<Assembly: AssemblyCopyright("Copyright ©  201
+")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
